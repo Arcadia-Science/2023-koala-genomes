@@ -14,7 +14,6 @@ rule download_bams:
     output:
         "outputs/bams/{sample}.bam.bai",
         "outputs/bams/{sample}.bam"
-    conda:"envs/curl.yml"
     shell: """
         s5cmd --recursive --exclude "*" --include "*/bam/*" cp s3://koalagenomes/ outputs/bams/
         """
