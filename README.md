@@ -1,4 +1,4 @@
-# Profiling expansions in koala population seq data
+# Profiling expansions in koala population seq data 🐨
 
 ### Set-up
 #### First create a conda environment using the ```envs/environment.yml``` file and activate your new environment
