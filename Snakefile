@@ -143,7 +143,7 @@ rule orf_call:
     This rule translates ORFs and then pulls out the peptide of interest
     """
     input:
-        "outputs/assembled/{sample}_runx2/{sample}.fasta",
+        "outputs/assembled/{sample}_{gene}/{sample}.fasta",
         "outputs/assembled/{sample}_zic2/{sample}.fasta", 
         "outputs/assembled/{sample}_foxl2/{sample}.fasta",
         "outputs/assembled/{sample}_arx/{sample}.fasta"
