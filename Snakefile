@@ -136,14 +136,6 @@ rule assemble:
         run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_runx2.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_runx2.fastq" "outputs/fastq/{wildcards.sample}_mapped_runx2.fastq" "outputs/assembled/{wildcards.sample}_runx2"
         mv outputs/assembled/{wildcards.sample}_runx2/contigs.fasta outputs/assembled/{wildcards.sample}_runx2/{wildcards.sample}.fasta
 
-        run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_zic2.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_zic2.fastq" "outputs/fastq/{wildcards.sample}_mapped_zic2.fastq" "outputs/assembled/{wildcards.sample}_zic2"
-        mv outputs/assembled/{wildcards.sample}_zic2/contigs.fasta outputs/assembled/{wildcards.sample}_zic2/{wildcards.sample}.fasta
-
-        run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_foxl2.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_foxl2.fastq" "outputs/fastq/{wildcards.sample}_mapped_foxl2.fastq" "outputs/assembled/{wildcards.sample}_foxl2"
-        mv outputs/assembled/{wildcards.sample}_foxl2/contigs.fasta outputs/assembled/{wildcards.sample}_foxl2/{wildcards.sample}.fasta
-
-        run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_arx.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_arx.fastq" "outputs/fastq/{wildcards.sample}_mapped_arx.fastq" "outputs/assembled/{wildcards.sample}_arx"
-        mv outputs/assembled/{wildcards.sample}_arx/contigs.fasta outputs/assembled/{wildcards.sample}_arx/{wildcards.sample}.fasta
         """
 
 rule orf_call:
