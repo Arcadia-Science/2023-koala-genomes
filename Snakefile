@@ -80,9 +80,6 @@ rule kmer_bait:
     conda:"envs/bbmap.yml"
     shell: """
         bbmap.sh ref=outputs/RUNX2_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_runx2.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_runx2.fastq nodisk 
-        bbmap.sh ref=outputs/ZIC2_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_zic2.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_zic2.fastq nodisk
-        bbmap.sh ref=outputs/FOXL2_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_foxl2.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_foxl2.fastq nodisk
-        bbmap.sh ref=outputs/ARX_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_arx.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_arx.fastq nodisk
         """
 
 rule mapped_reads:
