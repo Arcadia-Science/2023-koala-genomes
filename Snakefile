@@ -101,7 +101,7 @@ rule assemble:
     This rule assembles the kmer-baited reads and mapped reads for the region of interest
     """
     input:
-        "outputs/fastq/{sample}_mapped_runx2.fastq",
+        mapped="outputs/fastq/{sample}_mapped_{gene}.fastq",
         "outputs/fastq/{sample}_unmapped_baited1_runx2.fastq",
         "outputs/fastq/{sample}_unmapped_baited2_runx2.fastq",
         "outputs/fastq/{sample}_unmapped_baited1_zic2.fastq",
