@@ -2,7 +2,7 @@ import pandas as pd
         
 samples_df = pd.read_table('inputs/samples.tsv').set_index("AWSFileName",drop=False)
 SAMPLE = list(samples_df['AWSFileName'])
-
+GENES= ['RUNX2', 'ZIC2', 'FOXL2', 'ARX']
 rule all:
     input:
         "outputs/counts/stretch_lengths.txt",
