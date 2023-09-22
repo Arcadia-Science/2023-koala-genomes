@@ -59,11 +59,16 @@ rule create_kmer_file:
     This rule generates kmers from genes of interest
     """
     output:
-        "outputs/kmers.fasta"
+        "outputs/RUNX2_kmers.fasta",
+        "outputs/ZIC2_kmers.fasta",
+        "outputs/FOXL2_kmers.fasta",
+        "outputs/ARX_kmers.fasta"
     conda:"envs/bbmap.yml"
     shell: """
-        kmercountexact.sh in=inputs/RUNX2_koala.fasta  out=outputs/kmers.txt k=21
-        mv outputs/kmers.txt outputs/kmers.fasta
+        kmercountexact.sh in=inputs/RUNX2_koala.fasta  out=outputs/RUNX2_kmers.fasta k=21
+        kmercountexact.sh in=inputs/ZIC2_koala.fasta  out=outputs/ZIC2_kmers.fasta k=21
+        kmercountexact.sh in=inputs/FOXL2_koala.fasta  out=outputs/FOXL2_kmers.fasta k=21
+        kmercountexact.sh in=inputs/ARX_koala.fasta  out=outputs/ARX_kmers.fasta k=21
         """
 
 rule kmer_bait:
@@ -73,13 +78,25 @@ rule kmer_bait:
     input:
         "outputs/fastq/{sample}_unmapped_r1.fastq",
         "outputs/fastq/{sample}_unmapped_r2.fastq",
-        "outputs/kmers.fasta"
+        "outputs/RUNX2_kmers.fasta",
+        "outputs/ZIC2_kmers.fasta",
+        "outputs/FOXL2_kmers.fasta",
+        "outputs/ARX_kmers.fasta"
     output:
-        "outputs/fastq/{sample}_unmapped_baited1.fastq",
-        "outputs/fastq/{sample}_unmapped_baited2.fastq"
+        "outputs/fastq/{sample}_unmapped_baited1_runx2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited2_runx2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited1_zic2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited2_zic2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited1_foxl2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited2_foxl2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited1_arx.fastq",
+        "outputs/fastq/{sample}_unmapped_baited2_arx.fastq"
     conda:"envs/bbmap.yml"
     shell: """
-        bbmap.sh ref=outputs/kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2.fastq nodisk 
+        bbmap.sh ref=outputs/RUNX2_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_runx2.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_runx2.fastq nodisk 
+        bbmap.sh ref=outputs/ZIC2_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_zic2.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_zic2.fastq nodisk
+        bbmap.sh ref=outputs/FOXL2_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_foxl2.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_foxl2.fastq nodisk
+        bbmap.sh ref=outputs/ARX_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_arx.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_arx.fastq nodisk
         """
 
 rule mapped_reads:
@@ -89,11 +106,20 @@ rule mapped_reads:
     input:
         bam="outputs/bams/{sample}.bam"
     output:
-        "outputs/fastq/{sample}_mapped.fastq"
+        "outputs/fastq/{sample}_mapped_runx2.fastq",
+        "outputs/fastq/{sample}_mapped_zic2.fastq",
+        "outputs/fastq/{sample}_mapped_foxl2.fastq",
+        "outputs/fastq/{sample}_mapped_arx.fastq"
     conda:"envs/samtools.yml"
     shell: """
-        samtools view -b {input.bam} "MSTS01000055.1:12711350-12714427" > outputs/bams/{wildcards.sample}_mapped.bam
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped.bam -fq outputs/fastq/{wildcards.sample}_mapped.fastq
+        samtools view -b {input.bam} "MSTS01000055.1:12711350-12714427" > outputs/bams/{wildcards.sample}_mapped_runx2.bam
+        samtools view -b {input.bam} "MSTS01000150.1:3308891-3309559" > outputs/bams/{wildcards.sample}_mapped_zic2.bam
+        samtools view -b {input.bam} "MSTS01000024.1:18722964-18774112" > outputs/bams/{wildcards.sample}_mapped_foxl2.bam
+        samtools view -b {input.bam} "MSTS01000037.1:11244865-11257819" > outputs/bams/{wildcards.sample}_mapped_arx.bam
+        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_runx2.bam -fq outputs/fastq/{wildcards.sample}_mapped_runx2.fastq
+        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_zic2.bam -fq outputs/fastq/{wildcards.sample}_mapped_zic2.fastq
+        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_foxl2.bam -fq outputs/fastq/{wildcards.sample}_mapped_foxl2.fastq
+        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_arx.bam -fq outputs/fastq/{wildcards.sample}_mapped_arx.fastq
         """
 
 rule assemble:
@@ -101,15 +127,61 @@ rule assemble:
     This rule assembles the kmer-baited reads and mapped reads for the region of interest
     """
     input:
-        "outputs/fastq/{sample}_mapped.fastq",
-        "outputs/fastq/{sample}_unmapped_baited1.fastq",
-        "outputs/fastq/{sample}_unmapped_baited2.fastq"
+        "outputs/fastq/{sample}_mapped_runx2.fastq",
+        "outputs/fastq/{sample}_mapped_zic2.fastq",
+        "outputs/fastq/{sample}_mapped_foxl2.fastq",
+        "outputs/fastq/{sample}_mapped_arx.fastq",
+        "outputs/fastq/{sample}_unmapped_baited1_runx2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited2_runx2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited1_zic2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited2_zic2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited1_foxl2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited2_foxl2.fastq",
+        "outputs/fastq/{sample}_unmapped_baited1_arx.fastq",
+        "outputs/fastq/{sample}_unmapped_baited2_arx.fastq" 
     output:
-        "outputs/assembled/{sample}/{sample}.fasta"
+        "outputs/assembled/{sample}_runx2/{sample}.fasta",
+        "outputs/assembled/{sample}_foxl2/{sample}.fasta",
+        "outputs/assembled/{sample}_zic2/{sample}.fasta",
+        "outputs/assembled/{sample}_arx/{sample}.fasta"
     conda:"envs/spades.yml"
     shell: """
-        spades.py --isolate -1 outputs/fastq/{wildcards.sample}_unmapped_baited1.fastq -2 outputs/fastq/{wildcards.sample}_unmapped_baited2.fastq -s outputs/fastq/{wildcards.sample}_mapped.fastq -o outputs/assembled/{wildcards.sample} -m 1024
-        mv outputs/assembled/{wildcards.sample}/contigs.fasta outputs/assembled/{wildcards.sample}/{wildcards.sample}.fasta
+        run_spades() {{
+            local fastq1=$1
+            local fastq2=$2
+            local fastq_s=$3
+            local output_dir=$4
+
+            if [[ -s "$fastq1" ]]; then
+                input1="-1 $fastq1"
+            else
+                input1=""
+            fi
+
+            if [[ -s "$fastq2" ]]; then
+                input2="-2 $fastq2"
+            else
+                input2=""
+            fi
+
+            if [[ "$input1" || "$input2" ]]; then
+                spades.py --isolate $input1 $input2 -s "$fastq_s" -o "$output_dir" -m 1024
+            else
+                spades.py --isolate -s "$fastq_s" -o "$output_dir" -m 1024
+            fi
+        }}
+
+        run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_runx2.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_runx2.fastq" "outputs/fastq/{wildcards.sample}_mapped_runx2.fastq" "outputs/assembled/{wildcards.sample}_runx2"
+        mv outputs/assembled/{wildcards.sample}_runx2/contigs.fasta outputs/assembled/{wildcards.sample}_runx2/{wildcards.sample}.fasta
+
+        run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_zic2.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_zic2.fastq" "outputs/fastq/{wildcards.sample}_mapped_zic2.fastq" "outputs/assembled/{wildcards.sample}_zic2"
+        mv outputs/assembled/{wildcards.sample}_zic2/contigs.fasta outputs/assembled/{wildcards.sample}_zic2/{wildcards.sample}.fasta
+
+        run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_foxl2.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_foxl2.fastq" "outputs/fastq/{wildcards.sample}_mapped_foxl2.fastq" "outputs/assembled/{wildcards.sample}_foxl2"
+        mv outputs/assembled/{wildcards.sample}_foxl2/contigs.fasta outputs/assembled/{wildcards.sample}_foxl2/{wildcards.sample}.fasta
+
+        run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_arx.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_arx.fastq" "outputs/fastq/{wildcards.sample}_mapped_arx.fastq" "outputs/assembled/{wildcards.sample}_arx"
+        mv outputs/assembled/{wildcards.sample}_arx/contigs.fasta outputs/assembled/{wildcards.sample}_arx/{wildcards.sample}.fasta
         """
 
 rule orf_call:
@@ -117,15 +189,30 @@ rule orf_call:
     This rule translates ORFs and then pulls out the peptide of interest
     """
     input:
-        "outputs/assembled/{sample}/{sample}.fasta"
+        "outputs/assembled/{sample}_runx2/{sample}.fasta",
+        "outputs/assembled/{sample}_zic2/{sample}.fasta", 
+        "outputs/assembled/{sample}_foxl2/{sample}.fasta",
+        "outputs/assembled/{sample}_arx/{sample}.fasta"
     output:
-        "outputs/peptides/{sample}/{sample}_peptide_filt.fa"
+        "outputs/peptides/{sample}/{sample}_peptide_filt_runx2.fa",
+        "outputs/peptides/{sample}/{sample}_peptide_filt_zic2.fa",
+        "outputs/peptides/{sample}/{sample}_peptide_filt_foxl2.fa",
+        "outputs/peptides/{sample}/{sample}_peptide_filt_arx.fa"
     conda:"envs/orfipy.yml"
     params:
-        sequence_start="MRIPVDP"
+        sequence_start_runx2="MRIPVDP",
+        sequence_start_zic2="VHESSPQ",
+        sequence_start_foxl2="MMASYPE",
+        sequence_start_arx="LVAVHGT"
     shell: """
-        orfipy outputs/assembled/{wildcards.sample}/{wildcards.sample}.fasta --pep orf_peptides.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
-        awk -v seq_start={params.sequence_start} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt.fa        
+        orfipy outputs/assembled/{wildcards.sample}_runx2/{wildcards.sample}.fasta --pep orf_peptides_runx2.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
+        awk -v seq_start={params.sequence_start_runx2} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_runx2.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_runx2.fa
+        orfipy outputs/assembled/{wildcards.sample}_zic2/{wildcards.sample}.fasta --pep orf_peptides_zic2.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
+        awk -v seq_start={params.sequence_start_zic2} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_zic2.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_zic2.fa
+        orfipy outputs/assembled/{wildcards.sample}_foxl2/{wildcards.sample}.fasta --pep orf_peptides_foxl2.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
+        awk -v seq_start={params.sequence_start_foxl2} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_foxl2.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_foxl2.fa
+        orfipy outputs/assembled/{wildcards.sample}_arx/{wildcards.sample}.fasta --pep orf_peptides_arx.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
+        awk -v seq_start={params.sequence_start_arx} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_arx.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_arx.fa        
         """
 
 rule init_count_file:
@@ -133,7 +220,7 @@ rule init_count_file:
         "outputs/counts/stretch_lengths.txt"
     shell:
         """
-        echo -e "SampleName\tLongestQStretch" > {output}
+        echo -e "SampleName\tLongestStretch\tGene" > {output}
         """
 
 rule count_expansion:
@@ -141,14 +228,29 @@ rule count_expansion:
     This rule finds the expansion and determines its length
     """
     input:
-        peptide="outputs/peptides/{sample}/{sample}_peptide_filt.fa"
+        runx2="outputs/peptides/{sample}/{sample}_peptide_filt_runx2.fa",
+        zic2="outputs/peptides/{sample}/{sample}_peptide_filt_zic2.fa",
+        foxl2="outputs/peptides/{sample}/{sample}_peptide_filt_foxl2.fa",
+        arx="outputs/peptides/{sample}/{sample}_peptide_filt_arx.fa"
     output:
         "outputs/counts/{sample}count.txt"
     params:
         output_table="outputs/counts/stretch_lengths.txt"
     shell:
         """
-        longest_stretch=$(grep -v ">" {input.peptide} | tr -d '\n' | grep -o 'Q\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
-        echo -e "{wildcards.sample}\t${{longest_stretch}}" >> {params.output_table}
-        echo -e "{wildcards.sample}\t${{longest_stretch}}" > "outputs/counts/{wildcards.sample}count.txt"
+        longest_stretch=$(grep -v ">" {input.runx2} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_a" >> {params.output_table}
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_a" > "outputs/counts/{wildcards.sample}count.txt"
+        longest_stretch=$(grep -v ">" {input.runx2} | tr -d '\n' | grep -o 'Q\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_q" >> {params.output_table}
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_q" > "outputs/counts/{wildcards.sample}count.txt"
+        longest_stretch=$(grep -v ">" {input.zic2} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\tzic2" >> {params.output_table}
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\tzic2" > "outputs/counts/{wildcards.sample}count.txt"
+        longest_stretch=$(grep -v ">" {input.foxl2} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\tfoxl2" >> {params.output_table}
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\tfoxl2" > "outputs/counts/{wildcards.sample}count.txt"
+        longest_stretch=$(grep -v ">" {input.arx} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\tarx" >> {params.output_table}
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\tarx" > "outputs/counts/{wildcards.sample}count.txt"
         """
