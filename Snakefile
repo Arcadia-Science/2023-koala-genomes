@@ -6,7 +6,7 @@ GENES= ['RUNX2', 'ZIC2', 'FOXL2', 'ARX']
 rule all:
     input:
         "outputs/counts/stretch_lengths.txt",
-        expand("outputs/counts/{sample}count.txt", sample=SAMPLE)
+        expand("outputs/counts/{sample}_{gene}_count.txt", sample=SAMPLE, gene = GENES)
      
 rule get_unmapped:
     """
