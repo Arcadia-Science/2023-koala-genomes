@@ -93,7 +93,7 @@ rule mapped_reads:
     conda:"envs/samtools.yml"
     shell: """
         samtools view -b {input.bam} "MSTS01000055.1:12711350-12714427" > outputs/bams/{wildcards.sample}_mapped_runx2.bam
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_runx2.bam -fq outputs/fastq/{wildcards.sample}_mapped_runx2.fastq
+        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_{gene}.bam -fq {output}
         """
 
 rule assemble:
