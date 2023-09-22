@@ -144,9 +144,6 @@ rule orf_call:
     """
     input:
         "outputs/assembled/{sample}_{gene}/{sample}.fasta",
-        "outputs/assembled/{sample}_zic2/{sample}.fasta", 
-        "outputs/assembled/{sample}_foxl2/{sample}.fasta",
-        "outputs/assembled/{sample}_arx/{sample}.fasta"
     output:
         "outputs/peptides/{sample}/{sample}_peptide_filt_runx2.fa",
         "outputs/peptides/{sample}/{sample}_peptide_filt_zic2.fa",
