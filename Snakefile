@@ -93,9 +93,6 @@ rule mapped_reads:
     conda:"envs/samtools.yml"
     shell: """
         samtools view -b {input.bam} "MSTS01000055.1:12711350-12714427" > outputs/bams/{wildcards.sample}_mapped_runx2.bam
-        samtools view -b {input.bam} "MSTS01000150.1:3308891-3309559" > outputs/bams/{wildcards.sample}_mapped_zic2.bam
-        samtools view -b {input.bam} "MSTS01000024.1:18722964-18774112" > outputs/bams/{wildcards.sample}_mapped_foxl2.bam
-        samtools view -b {input.bam} "MSTS01000037.1:11244865-11257819" > outputs/bams/{wildcards.sample}_mapped_arx.bam
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_runx2.bam -fq outputs/fastq/{wildcards.sample}_mapped_runx2.fastq
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_zic2.bam -fq outputs/fastq/{wildcards.sample}_mapped_zic2.fastq
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_foxl2.bam -fq outputs/fastq/{wildcards.sample}_mapped_foxl2.fastq
