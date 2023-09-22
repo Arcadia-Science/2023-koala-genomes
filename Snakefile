@@ -230,7 +230,7 @@ rule count_expansion:
         foxl2="outputs/peptides/{sample}/{sample}_peptide_filt_foxl2.fa",
         arx="outputs/peptides/{sample}/{sample}_peptide_filt_arx.fa"
     output:
-        "outputs/counts/{sample}count.txt"
+        "outputs/counts/{sample}_{gene}_count.txt"
     params:
         output_table="outputs/counts/stretch_lengths.txt"
     shell:
