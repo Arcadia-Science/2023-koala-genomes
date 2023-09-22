@@ -90,9 +90,6 @@ rule mapped_reads:
         bam="outputs/bams/{sample}.bam"
     output:
         "outputs/fastq/{sample}_mapped_runx2.fastq",
-        "outputs/fastq/{sample}_mapped_zic2.fastq",
-        "outputs/fastq/{sample}_mapped_foxl2.fastq",
-        "outputs/fastq/{sample}_mapped_arx.fastq"
     conda:"envs/samtools.yml"
     shell: """
         samtools view -b {input.bam} "MSTS01000055.1:12711350-12714427" > outputs/bams/{wildcards.sample}_mapped_runx2.bam
