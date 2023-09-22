@@ -63,7 +63,7 @@ rule create_kmer_file:
         "outputs/{gene}_kmers.fasta"
     conda:"envs/bbmap.yml"
     shell: """
-        kmercountexact.sh in=inputs/RUNX2_koala.fasta  out=outputs/RUNX2_kmers.fasta k=21
+        kmercountexact.sh in={input} out={output} k=21
         """
 
 rule kmer_bait:
