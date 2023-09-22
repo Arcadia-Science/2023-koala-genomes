@@ -102,8 +102,8 @@ rule assemble:
     """
     input:
         mapped="outputs/fastq/{sample}_mapped_{gene}.fastq",
-        "outputs/fastq/{sample}_unmapped_baited1_runx2.fastq",
-        "outputs/fastq/{sample}_unmapped_baited2_runx2.fastq",
+        baited1="outputs/fastq/{sample}_unmapped_baited1_{gene}.fastq",
+        baited2="outputs/fastq/{sample}_unmapped_baited2_{gene}.fastq",
     output:
         "outputs/assembled/{sample}_runx2/{sample}.fasta",
         "outputs/assembled/{sample}_foxl2/{sample}.fasta",
