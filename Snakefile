@@ -59,10 +59,7 @@ rule create_kmer_file:
     This rule generates kmers from genes of interest
     """
     output:
-        "outputs/RUNX2_kmers.fasta",
-        "outputs/ZIC2_kmers.fasta",
-        "outputs/FOXL2_kmers.fasta",
-        "outputs/ARX_kmers.fasta"
+        "outputs/{gene}_kmers.fasta"
     conda:"envs/bbmap.yml"
     shell: """
         kmercountexact.sh in=inputs/RUNX2_koala.fasta  out=outputs/RUNX2_kmers.fasta k=21
