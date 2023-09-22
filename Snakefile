@@ -106,9 +106,6 @@ rule assemble:
         baited2="outputs/fastq/{sample}_unmapped_baited2_{gene}.fastq",
     output:
         "outputs/assembled/{sample}_runx2/{sample}.fasta",
-        "outputs/assembled/{sample}_foxl2/{sample}.fasta",
-        "outputs/assembled/{sample}_zic2/{sample}.fasta",
-        "outputs/assembled/{sample}_arx/{sample}.fasta"
     conda:"envs/spades.yml"
     shell: """
         run_spades() {{
