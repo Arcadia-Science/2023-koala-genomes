@@ -238,16 +238,4 @@ rule count_expansion:
         longest_stretch=$(grep -v ">" {input.runx2} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
         echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_a" >> {params.output_table}
         echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_a" > "outputs/counts/{wildcards.sample}count.txt"
-        longest_stretch=$(grep -v ">" {input.runx2} | tr -d '\n' | grep -o 'Q\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_q" >> {params.output_table}
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_q" > "outputs/counts/{wildcards.sample}count.txt"
-        longest_stretch=$(grep -v ">" {input.zic2} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\tzic2" >> {params.output_table}
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\tzic2" > "outputs/counts/{wildcards.sample}count.txt"
-        longest_stretch=$(grep -v ">" {input.foxl2} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\tfoxl2" >> {params.output_table}
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\tfoxl2" > "outputs/counts/{wildcards.sample}count.txt"
-        longest_stretch=$(grep -v ">" {input.arx} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\tarx" >> {params.output_table}
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\tarx" > "outputs/counts/{wildcards.sample}count.txt"
         """
