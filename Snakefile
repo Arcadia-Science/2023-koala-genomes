@@ -133,8 +133,8 @@ rule assemble:
             fi
         }}
 
-        run_spades "outputs/fastq/{wildcards.sample}_unmapped_baited1_runx2.fastq" "outputs/fastq/{wildcards.sample}_unmapped_baited2_runx2.fastq" "outputs/fastq/{wildcards.sample}_mapped_runx2.fastq" "outputs/assembled/{wildcards.sample}_runx2"
-        mv outputs/assembled/{wildcards.sample}_runx2/contigs.fasta outputs/assembled/{wildcards.sample}_runx2/{wildcards.sample}.fasta
+        run_spades "{input.baited1}" "{input.baited2}" "{input.mapped}" "outputs/assembled/{wildcards.sample}_{gene}"
+        mv outputs/assembled/{wildcards.sample}_{gene}/contigs.fasta {output}
 
         """
 
