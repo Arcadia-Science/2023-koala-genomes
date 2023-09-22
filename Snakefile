@@ -155,12 +155,6 @@ rule orf_call:
     shell: """
         orfipy outputs/assembled/{wildcards.sample}_runx2/{wildcards.sample}.fasta --pep orf_peptides_runx2.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
         awk -v seq_start={params.sequence_start_runx2} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_runx2.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_runx2.fa
-        orfipy outputs/assembled/{wildcards.sample}_zic2/{wildcards.sample}.fasta --pep orf_peptides_zic2.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
-        awk -v seq_start={params.sequence_start_zic2} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_zic2.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_zic2.fa
-        orfipy outputs/assembled/{wildcards.sample}_foxl2/{wildcards.sample}.fasta --pep orf_peptides_foxl2.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
-        awk -v seq_start={params.sequence_start_foxl2} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_foxl2.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_foxl2.fa
-        orfipy outputs/assembled/{wildcards.sample}_arx/{wildcards.sample}.fasta --pep orf_peptides_arx.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
-        awk -v seq_start={params.sequence_start_arx} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_arx.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_arx.fa        
         """
 
 rule init_count_file:
