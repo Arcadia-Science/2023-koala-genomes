@@ -74,9 +74,6 @@ rule kmer_bait:
         "outputs/fastq/{sample}_unmapped_r1.fastq",
         "outputs/fastq/{sample}_unmapped_r2.fastq",
         kmers="outputs/{gene}_kmers.fasta",
-        "outputs/ZIC2_kmers.fasta",
-        "outputs/FOXL2_kmers.fasta",
-        "outputs/ARX_kmers.fasta"
     output:
         "outputs/fastq/{sample}_unmapped_baited1_runx2.fastq",
         "outputs/fastq/{sample}_unmapped_baited2_runx2.fastq",
