@@ -75,8 +75,8 @@ rule kmer_bait:
         "outputs/fastq/{sample}_unmapped_r2.fastq",
         kmers="outputs/{gene}_kmers.fasta",
     output:
-        "outputs/fastq/{sample}_unmapped_baited1_runx2.fastq",
-        "outputs/fastq/{sample}_unmapped_baited2_runx2.fastq",
+        r1="outputs/fastq/{sample}_unmapped_baited1_{gene}.fastq",
+        r2="outputs/fastq/{sample}_unmapped_baited2_{gene}.fastq",
     conda:"envs/bbmap.yml"
     shell: """
         bbmap.sh ref=outputs/RUNX2_kmers.fasta in=outputs/fastq/{wildcards.sample}_unmapped_r1.fastq in2=outputs/fastq/{wildcards.sample}_unmapped_r2.fastq outm1=outputs/fastq/{wildcards.sample}_unmapped_baited1_runx2.fastq outm2=outputs/fastq/{wildcards.sample}_unmapped_baited2_runx2.fastq nodisk 
