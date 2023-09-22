@@ -36,7 +36,7 @@ rule merge_unmapped:
     output:
         "outputs/bams/{sample}_unmapped.bam"
     shell: """
-        samtools merge -u outputs/bams/{wildcards.sample}_unmapped.bam outputs/bams/{wildcards.sample}_unmap1.bam outputs/bams/{wildcards.sample}_unmap2.bam outputs/bams/{wildcards.sample}_unmap3.bam        
+        samtools merge -u {output} {input}
         """
 
 rule unmapped_to_reads:
