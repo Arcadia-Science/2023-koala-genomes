@@ -171,9 +171,6 @@ rule count_expansion:
     """
     input:
         "outputs/peptides/{sample}/{sample}_peptide_filt_{gene}.fa"
-        zic2="outputs/peptides/{sample}/{sample}_peptide_filt_zic2.fa",
-        foxl2="outputs/peptides/{sample}/{sample}_peptide_filt_foxl2.fa",
-        arx="outputs/peptides/{sample}/{sample}_peptide_filt_arx.fa"
     output:
         "outputs/counts/{sample}_{gene}_count.txt"
     params:
