@@ -104,12 +104,6 @@ rule assemble:
         mapped="outputs/fastq/{sample}_mapped_{gene}.fastq",
         "outputs/fastq/{sample}_unmapped_baited1_runx2.fastq",
         "outputs/fastq/{sample}_unmapped_baited2_runx2.fastq",
-        "outputs/fastq/{sample}_unmapped_baited1_zic2.fastq",
-        "outputs/fastq/{sample}_unmapped_baited2_zic2.fastq",
-        "outputs/fastq/{sample}_unmapped_baited1_foxl2.fastq",
-        "outputs/fastq/{sample}_unmapped_baited2_foxl2.fastq",
-        "outputs/fastq/{sample}_unmapped_baited1_arx.fastq",
-        "outputs/fastq/{sample}_unmapped_baited2_arx.fastq" 
     output:
         "outputs/assembled/{sample}_runx2/{sample}.fasta",
         "outputs/assembled/{sample}_foxl2/{sample}.fasta",
