@@ -146,9 +146,6 @@ rule orf_call:
         "outputs/assembled/{sample}_{gene}/{sample}.fasta",
     output:
         "outputs/peptides/{sample}/{sample}_peptide_filt_{gene}.fa",
-        "outputs/peptides/{sample}/{sample}_peptide_filt_zic2.fa",
-        "outputs/peptides/{sample}/{sample}_peptide_filt_foxl2.fa",
-        "outputs/peptides/{sample}/{sample}_peptide_filt_arx.fa"
     conda:"envs/orfipy.yml"
     params:
         sequence_start_runx2="MRIPVDP",
