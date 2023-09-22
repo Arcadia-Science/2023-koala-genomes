@@ -71,8 +71,8 @@ rule kmer_bait:
     This rule filters reads based on kmers of interest
     """
     input:
-        "outputs/fastq/{sample}_unmapped_r1.fastq",
-        "outputs/fastq/{sample}_unmapped_r2.fastq",
+        r1="outputs/fastq/{sample}_unmapped_r1.fastq",
+        r2="outputs/fastq/{sample}_unmapped_r2.fastq",
         kmers="outputs/{gene}_kmers.fasta",
     output:
         r1="outputs/fastq/{sample}_unmapped_baited1_{gene}.fastq",
