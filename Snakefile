@@ -58,6 +58,7 @@ rule create_kmer_file:
     """
     This rule generates kmers from genes of interest
     """
+    input: "inputs/{gene}_koala.fasta"
     output:
         "outputs/{gene}_kmers.fasta"
     conda:"envs/bbmap.yml"
