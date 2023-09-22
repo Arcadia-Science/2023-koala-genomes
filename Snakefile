@@ -94,9 +94,6 @@ rule mapped_reads:
     shell: """
         samtools view -b {input.bam} "MSTS01000055.1:12711350-12714427" > outputs/bams/{wildcards.sample}_mapped_runx2.bam
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_runx2.bam -fq outputs/fastq/{wildcards.sample}_mapped_runx2.fastq
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_zic2.bam -fq outputs/fastq/{wildcards.sample}_mapped_zic2.fastq
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_foxl2.bam -fq outputs/fastq/{wildcards.sample}_mapped_foxl2.fastq
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_arx.bam -fq outputs/fastq/{wildcards.sample}_mapped_arx.fastq
         """
 
 rule assemble:
