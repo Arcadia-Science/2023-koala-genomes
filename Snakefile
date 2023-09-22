@@ -73,7 +73,7 @@ rule kmer_bait:
     input:
         "outputs/fastq/{sample}_unmapped_r1.fastq",
         "outputs/fastq/{sample}_unmapped_r2.fastq",
-        "outputs/RUNX2_kmers.fasta",
+        kmers="outputs/{gene}_kmers.fasta",
         "outputs/ZIC2_kmers.fasta",
         "outputs/FOXL2_kmers.fasta",
         "outputs/ARX_kmers.fasta"
