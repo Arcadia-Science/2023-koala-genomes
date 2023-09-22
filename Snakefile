@@ -235,7 +235,7 @@ rule count_expansion:
         output_table="outputs/counts/stretch_lengths.txt"
     shell:
         """
-        longest_stretch=$(grep -v ">" {input.runx2} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_a" >> {params.output_table}
-        echo -e "{wildcards.sample}\t${{longest_stretch}}\trunx2_a" > "outputs/counts/{wildcards.sample}count.txt"
+        longest_stretch=$(grep -v ">" {input} | tr -d '\n' | grep -o 'A\\+' | awk '{{ print length($0) }}' | sort -n | tail -n 1)
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\t{wildcards.gene}_a" >> {params.output_table}
+        echo -e "{wildcards.sample}\t${{longest_stretch}}\t{wildcards.gene}_a" > "{output}"
         """
