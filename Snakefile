@@ -51,7 +51,7 @@ rule unmapped_to_reads:
     conda:"envs/samtools.yml"
     shell: """
         samtools sort -n {input} -o outputs/bams/{wildcards.sample}_unmapped_sort.bam
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_unmapped_sort.bam -fq outputs/fastq/{wildcards.sample}_unmapped_r1.fastq -fq2 outputs/fastq/{wildcards.sample}_unmapped_r2.fastq
+        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_unmapped_sort.bam -fq {output[0]} -fq2 {output[1]}
         """
 
 rule create_kmer_file:
