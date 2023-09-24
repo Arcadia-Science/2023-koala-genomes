@@ -3,6 +3,14 @@ import pandas as pd
 samples_df = pd.read_table('inputs/samples.tsv').set_index("AWSFileName",drop=False)
 SAMPLE = list(samples_df['AWSFileName'])
 GENES= ['RUNX2', 'ZIC2', 'FOXL2', 'ARX']
+
+gene_data = {
+    'RUNX2': {"coordinates": "MSTS01000055.1:12711350-12714427", "pept": "SPVVAA"},
+    'ZIC2': {"coordinates": "MSTS01000150.1:3308891-3309559", "pept": "TTNLSP"},
+    'FOXL2': {"coordinates": "MSTS01000024.1:18722964-18774112", "pept": "YASCQM"},
+    'ARX': {"coordinates": "MSTS01000037.1:11244865-11245057", "pept": "GRLLQG"}
+}
+
 rule all:
     input:
         "outputs/counts/stretch_lengths.txt",
@@ -18,6 +26,7 @@ rule get_unmapped:
         out2="outputs/bams/{sample}_unmap2.bam",
         out3="outputs/bams/{sample}_unmap3.bam"
     conda:"envs/samtools.yml"
+    threads: 10
     shell: """
         samtools view -u -f 4 -F 264 {input} > {output.out1}
         samtools view -u -f 8 -F 260 {input} > {output.out2}
@@ -35,6 +44,7 @@ rule merge_unmapped:
     conda:"envs/samtools.yml"
     output:
         "outputs/bams/{sample}_unmapped.bam"
+    threads: 10
     shell: """
         samtools merge -u {output} {input}
         """
@@ -49,6 +59,7 @@ rule unmapped_to_reads:
         "outputs/fastq/{sample}_unmapped_r1.fastq",
         "outputs/fastq/{sample}_unmapped_r2.fastq"
     conda:"envs/samtools.yml"
+    threads: 10
     shell: """
         samtools sort -n {input} -o outputs/bams/{wildcards.sample}_unmapped_sort.bam
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_unmapped_sort.bam -fq {output[0]} -fq2 {output[1]}
@@ -91,9 +102,11 @@ rule mapped_reads:
     output:
         "outputs/fastq/{sample}_mapped_{gene}.fastq",
     conda:"envs/samtools.yml"
+    params:
+        coords = lambda wildcards: gene_data[wildcards.gene]["coordinates"]
     shell: """
-        samtools view -b {input.bam} "MSTS01000055.1:12711350-12714427" > outputs/bams/{wildcards.sample}_mapped_runx2.bam
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_{gene}.bam -fq {output}
+        samtools view -b {input.bam} "{params.coords}" > outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam
+        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam -fq {output}
         """
 
 rule assemble:
@@ -133,8 +146,8 @@ rule assemble:
             fi
         }}
 
-        run_spades "{input.baited1}" "{input.baited2}" "{input.mapped}" "outputs/assembled/{wildcards.sample}_{gene}"
-        mv outputs/assembled/{wildcards.sample}_{gene}/contigs.fasta {output}
+        run_spades "{input.baited1}" "{input.baited2}" "{input.mapped}" "outputs/assembled/{wildcards.sample}_{wildcards.gene}"
+        mv outputs/assembled/{wildcards.sample}_{wildcards.gene}/contigs.fasta {output}
 
         """
 
@@ -148,13 +161,10 @@ rule orf_call:
         "outputs/peptides/{sample}/{sample}_peptide_filt_{gene}.fa",
     conda:"envs/orfipy.yml"
     params:
-        sequence_start_runx2="MRIPVDP",
-        sequence_start_zic2="VHESSPQ",
-        sequence_start_foxl2="MMASYPE",
-        sequence_start_arx="LVAVHGT"
+        pept = lambda wildcards: gene_data[wildcards.gene]["pept"]
     shell: """
         orfipy {input} --pep orf_peptides_{wildcards.gene}.fa --outdir outputs/peptides/{wildcards.sample}/ --partial-3
-        awk -v seq_start={params.sequence_start_runx2} 'BEGIN{{RS=">"}} $0 ~ seq_start {{print ">" $0}}' outputs/peptides/{wildcards.sample}/orf_peptides_{wildcards.gene}.fa > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_{wildcards.gene}.fa
+        awk '/^>/ {{if (seq) print seq; print; seq=""; next;}} {{seq=seq $0;}} END {{if (seq) print seq;}}' outputs/peptides/{wildcards.sample}/orf_peptides_{wildcards.gene}.fa | grep -B 1 {params.pept} > outputs/peptides/{wildcards.sample}/{wildcards.sample}_peptide_filt_{wildcards.gene}.fa
         """
 
 rule init_count_file:
