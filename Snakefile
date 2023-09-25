@@ -17,15 +17,28 @@ rule all:
         expand("outputs/counts/{sample}_RUNX2_count_q.txt", sample=SAMPLE),
         "outputs/counts/finaltable.txt"
 
+rule download_bams:
+      """
+      This rule downloads bams for 430 koala genomes (only keep one at a time)
+      """
+      output:
+        temp("outputs/downloadbams/{sample}.bam"),
+        temp("outputs/downloadbams/{sample}.bam.bai")
+      shell: """
+        export AWS_REGION=ap-southeast-2
+        s5cmd cp "s3://koalagenomes/*/bam/{wildcards.sample}.bam" "{output[0]}"
+        s5cmd cp "s3://koalagenomes/*/bam/{wildcards.sample}.bam.bai" "{output[1]}"
+        """
+
 rule get_unmapped:
     """
     This rule gets unmapped reads from bam file
     """
-    input: "outputs/bams/{sample}.bam"
+    input: "outputs/downloadbams/{sample}.bam"
     output: 
-        out1="outputs/bams/{sample}_unmap1.bam",
-        out2="outputs/bams/{sample}_unmap2.bam",
-        out3="outputs/bams/{sample}_unmap3.bam"
+        "outputs/bams/unmap1_{sample}.bam",
+        "outputs/bams/unmap2_{sample}.bam",
+        "outputs/bams/unmap3_{sample}.bam"
     conda:"envs/samtools.yml"
     threads: 10
     shell: """
@@ -39,12 +52,12 @@ rule merge_unmapped:
     This rule gets unmapped reads from bam file                              
     """
     input:
-        "outputs/bams/{sample}_unmap1.bam", 
-        "outputs/bams/{sample}_unmap2.bam",
-        "outputs/bams/{sample}_unmap3.bam"
+        out1="outputs/bams/unmap1_{sample}.bam",
+        out2="outputs/bams/unmap2_{sample}.bam",
+        out3="outputs/bams/unmap3_{sample}.bam"
     conda:"envs/samtools.yml"
     output:
-        "outputs/bams/{sample}_unmapped.bam"
+        "outputs/bams/unmapped_{sample}.bam"
     threads: 10
     shell: """
         samtools merge -u {output} {input}
@@ -55,15 +68,15 @@ rule unmapped_to_reads:
     This rule sorts the unmapped reads bam and creates fastq files
     """
     input:
-        "outputs/bams/{sample}_unmapped.bam"
+        "outputs/bams/unmapped_{sample}.bam"
     output:
-        "outputs/fastq/{sample}_unmapped_r1.fastq",
-        "outputs/fastq/{sample}_unmapped_r2.fastq"
+        "outputs/fastq/unmapped_r1_{sample}.fastq",
+        "outputs/fastq/unmapped_r2_{sample}.fastq"
     conda:"envs/samtools.yml"
     threads: 10
     shell: """
-        samtools sort -n {input} -o outputs/bams/{wildcards.sample}_unmapped_sort.bam
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_unmapped_sort.bam -fq {output[0]} -fq2 {output[1]}
+        samtools sort -n {input} -o outputs/bams/unmapped_sort_{wildcards.sample}.bam
+        bedtools bamtofastq -i outputs/bams/unmapped_sort_{wildcards.sample}.bam -fq {output[0]} -fq2 {output[1]}
         """
 
 rule create_kmer_file:
@@ -83,9 +96,9 @@ rule kmer_bait:
     This rule filters reads based on kmers of interest
     """
     input:
-        r1="outputs/fastq/{sample}_unmapped_r1.fastq",
-        r2="outputs/fastq/{sample}_unmapped_r2.fastq",
-        kmers="outputs/{gene}_kmers.fasta",
+        r1="outputs/fastq/unmapped_r1_{sample}.fastq",
+        r2="outputs/fastq/unmapped_r2_{sample}.fastq",
+        kmers="outputs/{gene}_kmers.fasta"
     output:
         r1="outputs/fastq/{sample}_unmapped_baited1_{gene}.fastq",
         r2="outputs/fastq/{sample}_unmapped_baited2_{gene}.fastq",
@@ -99,7 +112,7 @@ rule mapped_reads:
     This rule extracts the reads from the original bam that mapped to the gene of interest.
     """
     input:
-        bam="outputs/bams/{sample}.bam"
+        bam="outputs/downloadbams/{sample}.bam"
     output:
         "outputs/fastq/{sample}_mapped_{gene}.fastq",
     conda:"envs/samtools.yml"
