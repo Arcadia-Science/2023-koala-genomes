@@ -1,0 +1,7 @@
+channels:
+   - conda-forge
+   - bioconda
+   - defaults
+dependencies:
+   - orfipy=0.0.4
+   - python=3.9.0
