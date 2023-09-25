@@ -36,9 +36,9 @@ rule get_unmapped:
     """
     input: "outputs/downloadbams/{sample}.bam"
     output: 
-        "outputs/bams/unmap1_{sample}.bam",
-        "outputs/bams/unmap2_{sample}.bam",
-        "outputs/bams/unmap3_{sample}.bam"
+        out1="outputs/bams/unmap1_{sample}.bam",
+        out2="outputs/bams/unmap2_{sample}.bam",
+        out3="outputs/bams/unmap3_{sample}.bam"
     conda:"envs/samtools.yml"
     threads: 10
     shell: """
