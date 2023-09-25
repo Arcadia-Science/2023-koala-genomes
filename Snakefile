@@ -196,9 +196,9 @@ rule count_q:
         echo -e "{wildcards.sample}\t${{longest_stretch}}\tRUNX2_q" > "outputs/counts/{wildcards.sample}_RUNX2_count_q.txt"
         """
 
-checkpoint combine_runx2:
+rule combine_runx2:
     """
-    # Checkpoint for combining RUNX2 files
+    # Rule for combining RUNX2 files
     """
     input: 
         files=expand("outputs/counts/{sample}_RUNX2_count_q.txt", sample=SAMPLE)
@@ -209,9 +209,9 @@ checkpoint combine_runx2:
         merged = pd.concat(dfs)
         merged.to_csv(output[0], sep='\t', header=False, index=False)
 
-checkpoint combine_gene:
+rule combine_gene:
     """
-    # Checkpoint for combining gene files
+    # Rule for combining gene files
     """
     input: 
         files=expand("outputs/counts/{sample}_{gene}_count.txt",sample=SAMPLE, gene = GENES)
