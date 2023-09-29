@@ -10,8 +10,8 @@ conda activate koala
 #### Choose what bam files you want to download from the koala pop seq AWS bucket
 The ```inputs/samples.tsv``` file contains all of the necessary information for the samples that will go through this workflow. If you want to run this workflow on a different set of files, you will need to edit this table. Each bam file of interest should have a single row in the table. These two columns are required for running the pipeline:
 
-```AWSFileName```: File name from this [table] (https://koalagenomes.s3.ap-southeast-2.amazonaws.com/Koala_Metadata-19-10-2022.csv). <br>
-```AWSFolderName```: Corresponding folder from this [table] (https://koalagenomes.s3.ap-southeast-2.amazonaws.com/Koala_Metadata-19-10-2022.csv). <br>
+```AWSFileName```: File name from this [table](https://koalagenomes.s3.ap-southeast-2.amazonaws.com/Koala_Metadata-19-10-2022.csv). <br>
+```AWSFolderName```: Corresponding folder from this [table](https://koalagenomes.s3.ap-southeast-2.amazonaws.com/Koala_Metadata-19-10-2022.csv). <br>
 
 
 #### Run Snakemake from your activated environment
