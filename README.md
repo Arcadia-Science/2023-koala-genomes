@@ -27,8 +27,9 @@ The ```--rerun-incomplete``` flag can be appended to the above command if the pi
 #### Expected final output
 A table of the polyA expansion lengths for RUNX2, ZIC2, FOXL2, and ARX. PolyQ expansion is also counted for RUNX2.
 
-sample  length  gene_aminoacid
-Kyogle_F_50433  22      RUNX2_a
-Kyogle_F_50433  18      ZIC2_a
-Kyogle_F_50433  16      FOXL2_a
-Kyogle_F_50433  19      ARX_a
+|sample|  length|  gene_aminoacid|
+| ----------- | ----------- |----------- |
+|Kyogle_F_50433|  22|      RUNX2_a|
+|Kyogle_F_50433|  18|      ZIC2_a|
+|Kyogle_F_50433|  16|      FOXL2_a|
+|Kyogle_F_50433|  19|      ARX_a|
