@@ -28,13 +28,16 @@ rule download_extract:
     params:
         folder = lambda wildcards: samples_df.loc[wildcards.sample]["AWSFolderName"],
         coords = lambda wildcards: gene_data[wildcards.gene]["coordinates"],
-        bam = "outputs/downloadbams/{wildcards.sample}.bam"
+        bam = "outputs/downloadbams/{wildcards.sample}.bam",
+        bai = "outputs/downloadbams/{wildcards.sample}.bam.bai"
     shell: """
         export AWS_REGION=ap-southeast-2
         s5cmd cp --show-progress "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam" {params.bam}
+        s5cmd cp --show-progress "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam.bai" {params.bai}
         samtools view -b -@ 16 {params.bam} "{params.coords}" > outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam -fq {output}
         rm {params.bam}
+        rm {params.bai}
         """
 
 rule assemble:
