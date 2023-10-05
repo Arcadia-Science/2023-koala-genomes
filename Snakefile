@@ -23,6 +23,7 @@ rule download_extract:
     """
     output:
         "outputs/fastq/{sample}_mapped_{gene}.fastq"
+    threads: 16
     conda:"envs/samtools.yml"
     params:
         folder = lambda wildcards: samples_df.loc[wildcards.sample]["AWSFolderName"],
@@ -31,7 +32,7 @@ rule download_extract:
     shell: """
         export AWS_REGION=ap-southeast-2
         aws s3 cp "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam" {params.bam}
-        samtools view -b {params.bam} "{params.coords}" > outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam
+        samtools view -b -@ 16 {params.bam} "{params.coords}" > outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam -fq {output}
         rm {params.bam}
         """
