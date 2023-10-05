@@ -5,3 +5,4 @@ channels:
 dependencies:
    - samtools=1.17
    - bedtools=2.31.0 
+   - s5cmd = 2.2.2
