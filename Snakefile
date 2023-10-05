@@ -31,7 +31,7 @@ rule download_extract:
         bam = "outputs/downloadbams/{wildcards.sample}.bam"
     shell: """
         export AWS_REGION=ap-southeast-2
-        aws s3 cp "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam" {params.bam}
+        s5cmd cp "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam" {params.bam}
         samtools view -b -@ 16 {params.bam} "{params.coords}" > outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam -fq {output}
         rm {params.bam}
