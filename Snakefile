@@ -26,13 +26,14 @@ rule download_extract:
     conda:"envs/samtools.yml"
     params:
         folder = lambda wildcards: samples_df.loc[wildcards.sample]["AWSFolderName"],
-        coords = lambda wildcards: gene_data[wildcards.gene]["coordinates"]
+        coords = lambda wildcards: gene_data[wildcards.gene]["coordinates"],
+        bam = "outputs/downloadbams/{wildcards.sample}.bam"
     shell: """
         export AWS_REGION=ap-southeast-2
-        aws s3 cp "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam" "outputs/downloadbams/{wildcards.sample}.bam"
-        samtools view -b {input.bam} "{params.coords}" > outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam
+        aws s3 cp "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam" {params.bam}
+        samtools view -b {params.bam} "{params.coords}" > outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam
         bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam -fq {output}
-        rm "outputs/downloadbams/{wildcards.sample}.bam"
+        rm {params.bam}
         """
 
 rule assemble:
