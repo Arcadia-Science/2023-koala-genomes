@@ -31,7 +31,7 @@ rule download_extract:
         gene_data_file = "gene_data.json"  # path to the gene_data JSON file
     shell:
         """
-        python3 scripts/process_genes.py {wildcards.sample} {params.folder} {params.gene_data_file}
+        python3 scripts/download_and_process_genes.py {wildcards.sample} {params.folder} {params.gene_data_file}
         """
 
 rule assemble:
