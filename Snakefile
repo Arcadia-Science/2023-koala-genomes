@@ -11,15 +11,15 @@ gene_data = {
     'ARX': {"coordinates": "MSTS01000037.1:11243615-11249999", "pept": "LQGA\+"}
 }
 
+gene_data_file = "gene_data.json"
+with open(gene_data_file, "w") as f:
+    json.dump(gene_data, f)
+
 rule all:
     input:
         expand("outputs/counts/{sample}_{gene}_count.txt", sample=SAMPLE, gene = GENES),
         expand("outputs/counts/{sample}_RUNX2_count_q.txt", sample=SAMPLE),
         "outputs/counts/finaltable.txt"
-
-gene_data_file = "gene_data.json"
-with open(gene_data_file, "w") as f:
-    json.dump(gene_data, f)
 
 rule download_extract:
     output:
