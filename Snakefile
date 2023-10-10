@@ -17,27 +17,21 @@ rule all:
         expand("outputs/counts/{sample}_RUNX2_count_q.txt", sample=SAMPLE),
         "outputs/counts/finaltable.txt"
 
+gene_data_file = "gene_data.json"
+with open(gene_data_file, "w") as f:
+    json.dump(gene_data, f)
+
 rule download_extract:
-    """
-    This rule downloads bams for 430 koala genomes (only keep one at a time),  extracts the reads from the original bam that mapped to the genes of interest, and removes the bam file after.
-    """
     output:
-        "outputs/fastq/{sample}_mapped_{gene}.fastq"
+        expand("outputs/fastq/{{sample}}_mapped_{gene}.fastq", gene=GENES)
     threads: 16
-    conda:"envs/samtools.yml"
+    conda: "envs/samtools.yml"
     params:
         folder = lambda wildcards: samples_df.loc[wildcards.sample]["AWSFolderName"],
-        coords = lambda wildcards: gene_data[wildcards.gene]["coordinates"],
-        bam = "outputs/downloadbams/{wildcards.sample}.bam",
-        bai = "outputs/downloadbams/{wildcards.sample}.bam.bai"
-    shell: """
-        export AWS_REGION=ap-southeast-2
-        s5cmd cp --show-progress "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam" {params.bam}
-        s5cmd cp --show-progress "s3://koalagenomes/{params.folder}/bam/{wildcards.sample}.bam.bai" {params.bai}
-        samtools view -b -@ 16 {params.bam} "{params.coords}" > outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam
-        bedtools bamtofastq -i outputs/bams/{wildcards.sample}_mapped_{wildcards.gene}.bam -fq {output}
-        rm {params.bam}
-        rm {params.bai}
+        gene_data_file = "gene_data.json"  # path to the gene_data JSON file
+    shell:
+        """
+        python3 scripts/process_genes.py {wildcards.sample} {params.folder} {params.gene_data_file}
         """
 
 rule assemble:
