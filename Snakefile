@@ -29,7 +29,7 @@ rule download_extract:
         gene_data_json=gene_data_json
     shell:
         """
-        python3 scripts/process_genes.py {wildcards.sample} {params.folder} '{params.gene_data_json}'
+        python3 scripts/download_and_process_genes.py {wildcards.sample} {params.folder} '{params.gene_data_json}'
         """
 
 rule assemble:
