@@ -5,10 +5,9 @@ import json
 def run_command(cmd):
     subprocess.run(cmd, shell=True, executable="/bin/bash")
 
-def main(sample, folder, gene_data_file):
-    # Load gene_data from the JSON file
-    with open(gene_data_file, "r") as f:
-        gene_data = json.load(f)
+def main(sample, folder, gene_data_json):
+    # Load gene_data from the JSON string
+    gene_data = json.loads(gene_data_json)
 
     bam = f"outputs/downloadbams/{sample}.bam"
     bai = f"outputs/downloadbams/{sample}.bam.bai"
@@ -29,5 +28,7 @@ def main(sample, folder, gene_data_file):
     run_command(f"rm {bai}")
 
 if __name__ == "__main__":
-    sample, folder, gene_data_file = sys.argv[1], sys.argv[2], sys.argv[3]
-    main(sample, folder, gene_data_file)
+    sample = sys.argv[1]
+    folder = sys.argv[2]
+    gene_data_json = sys.argv[3]
+    main(sample, folder, gene_data_json)
