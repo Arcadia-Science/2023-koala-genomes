@@ -11,9 +11,7 @@ gene_data = {
     'ARX': {"coordinates": "MSTS01000037.1:11243615-11249999", "pept": "LQGA\+"}
 }
 
-gene_data_file = "gene_data.json"
-with open(gene_data_file, "w") as f:
-    json.dump(gene_data, f)
+gene_data_json = json.dumps(gene_data)
 
 rule all:
     input:
@@ -28,10 +26,10 @@ rule download_extract:
     conda: "envs/samtools.yml"
     params:
         folder = lambda wildcards: samples_df.loc[wildcards.sample]["AWSFolderName"],
-        gene_data_file = "gene_data.json"  # path to the gene_data JSON file
+        gene_data_json=gene_data_json
     shell:
         """
-        python3 scripts/download_and_process_genes.py {wildcards.sample} {params.folder} {params.gene_data_file}
+        python3 scripts/process_genes.py {wildcards.sample} {params.folder} '{params.gene_data_json}'
         """
 
 rule assemble:
