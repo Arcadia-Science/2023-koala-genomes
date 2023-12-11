@@ -1,4 +1,5 @@
 # Profiling expansions in [koala population seq data](https://github.com/awgg-lab/australasiangenomes/blob/main/species/Phascolarctos_cinereus.md) 🐨
+The pipeline described in this repository was created to profile the polyglutamine and polyalanine repeat expansion lengths in the RUNX2, ZIC2, FOXL2, and ARX genes across a sequenced koala population. It is associated with the [Repeat expansions associated with human disease are present in diverse organisms](https://doi.org/10.57844/arcadia-e367-8b55) pub from Arcadia Science.
 
 ### Set-up
 #### First create a conda environment using the ```envs/environment.yml``` file and activate your new environment
